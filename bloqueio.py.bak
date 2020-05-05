@@ -1,0 +1,100 @@
+import getpass
+import os
+import platform
+import socket
+from uuid import getnode as get_mac
+from winreg import *
+
+import fdb
+
+import subprocess, win32con
+from win32api import SetFileAttributes
+from _winreg import *
+
+
+class conexao:
+
+    def select(self, sql):
+        con = fdb.connect(database="C:/_BD/LM.FDB", user="SYSDBA", password="masterkey")
+        cur = con.cursor()
+
+        cur.execute(sql)
+
+        dados = cur.fetchall()
+
+        cur.close()
+        con.close()
+
+        return dados
+
+
+
+def atribuirEspaco(string):
+    tamanho = len(string)
+
+    restante = 21 - tamanho
+    espaco = ""
+
+    for i in range(restante):
+        espaco = espaco + " "
+
+    return espaco
+
+
+
+cnx = conexao()
+retorno = cnx.select("select * from usuarios")
+
+#print("USUARIO              SENHA")
+#print("-------------------------------------")
+
+#for x in range(len(retorno)):
+
+    #print(retorno[x][0] + atribuirEspaco(retorno[x][0]) + retorno[x][1])
+
+print((socket.gethostbyname(socket.gethostname())))
+print((getpass.getuser()))
+print((platform.node()))
+
+hex = hex(get_mac())
+hex = hex[2:14]
+
+print(hex)
+
+os.system("pause")
+
+# Note: 1 locks the machine, 0 opens the machine.
+UserPolicySetting = 1
+# Connect to the correct Windows Registry key and path, then open the key
+reg = ConnectRegistry(None, HKEY_CURRENT_USER)
+regpath = r"Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer"
+key = OpenKey(reg, regpath, 0, KEY_WRITE)
+# Edit registry key by adding new values (Lock-down the PC)
+SetValueEx(key, "NoRecentDocsMenu", 0, REG_DWORD, UserPolicySetting)
+SetValueEx(key, "NoRun", 0, REG_DWORD, UserPolicySetting)
+SetValueEx(key, "NoFavoritesMenu", 0, REG_DWORD, UserPolicySetting)
+SetValueEx(key, "NoFind", 0, REG_DWORD, UserPolicySetting)
+SetValueEx(key, "NoSetFolders", 0, REG_DWORD, UserPolicySetting)
+SetValueEx(key, "NoSetTaskbar", 0, REG_DWORD, UserPolicySetting)
+SetValueEx(key, "NoSetActiveDesktop", 0, REG_DWORD, UserPolicySetting)
+SetValueEx(key, "NoWindowsUpdate", 0, REG_DWORD, UserPolicySetting)
+SetValueEx(key, "NoSMHelp", 0, REG_DWORD, UserPolicySetting)
+SetValueEx(key, "NoCloseDragDropBands", 0, REG_DWORD, UserPolicySetting)
+SetValueEx(key, "NoActiveDesktopChanges", 0, REG_DWORD, UserPolicySetting)
+SetValueEx(key, "NoMovingBands", 0, REG_DWORD, UserPolicySetting)
+SetValueEx(key, "NoViewContextMenu", 0, REG_DWORD, UserPolicySetting)
+SetValueEx(key, "NoChangeStartMenu", 0, REG_DWORD, UserPolicySetting)
+SetValueEx(key, "NoTrayContextMenu", 0, REG_DWORD, UserPolicySetting)
+CloseKey(key)
+
+
+
+
+
+
+
+
+
+
+
+
